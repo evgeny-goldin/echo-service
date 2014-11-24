@@ -1,3 +1,28 @@
+apply plugin: 'idea'
+apply plugin: 'java'
+
+repositories {
+  jcenter()
+}
+
+sourceCompatibility = 1.8
+group               = 'com.goldin.helios'
+version             = '0.0.1-SNAPSHOT' 
+
+idea.project {
+  jdkName = '1.8'
+  ipr.withXml { provider -> provider.node.component.find { it.@name == 'VcsDirectoryMappings' }.mapping.@vcs = 'Git' }
+}
+
+idea.module {
+  excludeDirs += file( 'out' )
+}
+
+dependencies {
+  // http://search.maven.org/#search%7Cgav%7C1%7Cg%3A%22org.springframework.boot%22%20AND%20a%3A%22spring-boot-starter-web%22
+  compile( 'org.springframework.boot:spring-boot-starter-web:1.1.9.RELEASE' )
+}
+
 println "> Running Gradle [${ project.gradle.gradleVersion }], Groovy [${ GroovySystem.version }], Java [${ System.getProperty( 'java.version' ) }]"
 println "> Building [${ project.group }:${ project.name }:${ project.version }]"
 
