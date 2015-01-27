@@ -6,8 +6,8 @@ group   = 'com.goldin.helios'
 version = '0.0.1-SNAPSHOT'
 
 dependencies {
-  // http://search.maven.org/#search%7Cgav%7C1%7Cg%3A%22org.springframework.boot%22%20AND%20a%3A%22spring-boot-starter-web%22
-  compile( 'org.springframework.boot:spring-boot-starter-web:1.1.9.RELEASE' )
+  // http://jcenter.bintray.com/org/springframework/boot/spring-boot-starter-web/
+  compile( 'org.springframework.boot:spring-boot-starter-web:1.2.1.RELEASE' )
 }
 
 println "> Running Gradle [${ project.gradle.gradleVersion }], Groovy [${ GroovySystem.version }], Java [${ System.getProperty( 'java.version' ) }]"
