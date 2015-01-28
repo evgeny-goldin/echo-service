@@ -4,11 +4,12 @@ apply plugin: 'com.bmuschko.docker-remote-api'
 
 defaultTasks 'image'
 
-group               = 'com.goldin.hello'
+group               = 'com.goldin.echo'
 version             = '0.0.1-SNAPSHOT'
 sourceCompatibility = 1.7
 targetCompatibility = 1.7
 final portNumber    = 8080
+final dockerImage   = 'evgenyg/echo'
 
 buildscript {
   // http://docs.spring.io/spring-boot/docs/1.2.1.RELEASE/reference/htmlsingle/#getting-started-gradle-installation
@@ -49,19 +50,27 @@ docker {
 
 
 task dockerfile( type: com.bmuschko.gradle.docker.tasks.image.Dockerfile ) {
-    destFile = project.file( 'Dockerfile' )
-    from           'evgenyg/java'
-    maintainer     'Evgeny Goldin "evgenyg@gmail.com"'
-    addFile        "build/distributions/${project.name}-${project.version}.tar", '/opt'
-    defaultCommand "/opt/${project.name}-${project.version}/bin/${project.name}"
-    exposePort     portNumber
+  destFile = project.file( 'Dockerfile' )
+  from           'evgenyg/java'
+  maintainer     'Evgeny Goldin "evgenyg@gmail.com"'
+  addFile        "build/distributions/${project.name}-${project.version}.tar", '/opt'
+  defaultCommand "/opt/${project.name}-${project.version}/bin/${project.name}"
+  exposePort     portNumber
 }
 
 
 task image( type: com.bmuschko.gradle.docker.tasks.image.DockerBuildImage ) {
-    dependsOn distTar, dockerfile
-    inputDir = dockerfile.destFile.parentFile
-    tag      = 'evgenyg/hello'
+  dependsOn distTar, dockerfile
+  inputDir = dockerfile.destFile.parentFile
+  noCache  = true
+  remove   = true
+  tag      = dockerImage
+}
+
+
+task push( type: com.bmuschko.gradle.docker.tasks.image.DockerPushImage ) {
+  dependsOn image
+  imageName = dockerImage
 }
 
 

@@ -1,4 +1,4 @@
-package com.goldin.hello;
+package com.goldin.echo;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
@@ -11,7 +11,7 @@ import java.util.Date;
 
 @Controller
 @EnableAutoConfiguration
-public class SampleController {
+public class EchoController {
 
   @RequestMapping("/")
   @ResponseBody
@@ -20,6 +20,6 @@ public class SampleController {
   }
 
   public static void main( String[] args ) throws Exception {
-    SpringApplication.run(SampleController.class, args);
+    SpringApplication.run(EchoController.class, args);
   }
 }
