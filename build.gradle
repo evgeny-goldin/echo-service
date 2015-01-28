@@ -6,9 +6,7 @@ defaultTasks 'image'
 
 group               = 'com.goldin.hello'
 version             = '0.0.1-SNAPSHOT'
-//noinspection GroovyUnusedAssignment
 sourceCompatibility = 1.7
-//noinspection GroovyUnusedAssignment
 targetCompatibility = 1.7
 final portNumber    = 8080
 
@@ -27,7 +25,6 @@ dependencies {
   compile( 'org.springframework.boot:spring-boot-starter-web:1.2.1.RELEASE' )
 }
 
-// noinspection GroovyUntypedAccess
 processResources {
     filter ( org.apache.tools.ant.filters.ReplaceTokens, tokens: [ 'portNumber' : String.valueOf( portNumber ) ])
 }
@@ -39,7 +36,6 @@ processResources {
  */
 
 docker {
-  // noinspection GrReassignedInClosureLocalVar
   url      = "https://${ env( 'DOCKER_HOST' ) - 'tcp://' }"
   certPath = new File( env( 'DOCKER_CERT_PATH' ))
 
