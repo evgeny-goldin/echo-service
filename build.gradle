@@ -51,7 +51,7 @@ docker {
 
 task dockerfile( type: com.bmuschko.gradle.docker.tasks.image.Dockerfile ) {
   destFile = project.file( 'Dockerfile' )
-  from           'evgenyg/java'
+  from           'evgenyg/java:jre-1.8'
   maintainer     'Evgeny Goldin "evgenyg@gmail.com"'
   addFile        "build/distributions/${project.name}-${project.version}.tar", '/opt'
   defaultCommand "/opt/${project.name}-${project.version}/bin/${project.name}"
