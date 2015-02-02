@@ -1,0 +1,5 @@
+---
+server: {
+  port:    @portNumber@,
+  address: 0.0.0.0
+}

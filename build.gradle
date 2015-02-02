@@ -6,28 +6,37 @@ defaultTasks 'image'
 
 group               = 'com.goldin.echo'
 version             = '0.0.1-SNAPSHOT'
+// noinspection GroovyUnusedAssignment
 sourceCompatibility = 1.7
+// noinspection GroovyUnusedAssignment
 targetCompatibility = 1.7
 final portNumber    = 8080
 final dockerImage   = 'evgenyg/echo'
 
 buildscript {
-  // http://docs.spring.io/spring-boot/docs/1.2.1.RELEASE/reference/htmlsingle/#getting-started-gradle-installation
+  // https://docs.spring.io/spring-boot/docs/1.2.1.RELEASE/reference/htmlsingle/#getting-started-gradle-installation
+  // https://jcenter.bintray.com/com/bmuschko/gradle-docker-plugin/
   repositories { jcenter() }
   dependencies { classpath( 'org.springframework.boot:spring-boot-gradle-plugin:1.2.1.RELEASE',
-                            'com.bmuschko:gradle-docker-plugin:0.8.1' )}
+                            'com.bmuschko:gradle-docker-plugin:0.8.2' )}
 }
 
 repositories { jcenter() }
 
 
+configurations {
+  compile.exclude module: 'spring-boot-starter-tomcat'
+}
+
 dependencies {
-  // http://jcenter.bintray.com/org/springframework/boot/spring-boot-starter-web/
-  compile( 'org.springframework.boot:spring-boot-starter-web:1.2.1.RELEASE' )
+  // https://jcenter.bintray.com/org/springframework/boot/spring-boot-starter-web/
+  // https://docs.spring.io/spring-boot/docs/current/reference/html/howto-embedded-servlet-containers.html#howto-use-jetty-instead-of-tomcat
+  compile( 'org.springframework.boot:spring-boot-starter-web:1.2.1.RELEASE',
+           'org.springframework.boot:spring-boot-starter-jetty:1.2.1.RELEASE' )
 }
 
 processResources {
-    filter ( org.apache.tools.ant.filters.ReplaceTokens, tokens: [ 'portNumber' : String.valueOf( portNumber ) ])
+  filter ( org.apache.tools.ant.filters.ReplaceTokens, tokens: [ 'portNumber' : String.valueOf( portNumber ) ])
 }
 
 /**
@@ -38,6 +47,7 @@ processResources {
 
 if ( env( 'DOCKER_HOST', '' )) {
   docker {
+    // noinspection GrReassignedInClosureLocalVar
     url      = "https://${ env( 'DOCKER_HOST' ) - 'tcp://' }"
     certPath = new File( env( 'DOCKER_CERT_PATH' ))
 
