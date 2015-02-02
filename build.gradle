@@ -42,7 +42,9 @@ dependencies {
            "org.eclipse.jetty.websocket:websocket-server:$jettyVersion",
            "org.eclipse.jetty.websocket:javax-websocket-server-impl:$jettyVersion",
            "org.eclipse.jetty.websocket:javax-websocket-client-impl:$jettyVersion",
-           "org.eclipse.jetty.websocket:websocket-server:$jettyVersion")
+           "org.eclipse.jetty.websocket:websocket-server:$jettyVersion",
+  // https://jcenter.bintray.com/com/google/guava/guava/
+           "com.google.guava:guava:18.0" )
 }
 
 processResources {
