@@ -12,6 +12,10 @@ sourceCompatibility = 1.7
 targetCompatibility = 1.7
 final portNumber    = 8080
 final dockerImage   = 'evgenyg/echo'
+// https://jcenter.bintray.com/org/springframework/boot/spring-boot-starter-web/
+final springBootVersion = '1.2.1.RELEASE'
+// https://jcenter.bintray.com/org/eclipse/jetty/jetty-webapp/
+final jettyVersion      = '9.2.7.v20150116'
 
 buildscript {
   // https://docs.spring.io/spring-boot/docs/1.2.1.RELEASE/reference/htmlsingle/#getting-started-gradle-installation
@@ -31,8 +35,14 @@ configurations {
 dependencies {
   // https://jcenter.bintray.com/org/springframework/boot/spring-boot-starter-web/
   // https://docs.spring.io/spring-boot/docs/current/reference/html/howto-embedded-servlet-containers.html#howto-use-jetty-instead-of-tomcat
-  compile( 'org.springframework.boot:spring-boot-starter-web:1.2.1.RELEASE',
-           'org.springframework.boot:spring-boot-starter-jetty:1.2.1.RELEASE' )
+  compile( "org.springframework.boot:spring-boot-starter-web:$springBootVersion",
+           "org.springframework.boot:spring-boot-starter-jetty:$springBootVersion",
+           "org.eclipse.jetty:jetty-jsp:$jettyVersion",
+           "org.eclipse.jetty:jetty-webapp:$jettyVersion",
+           "org.eclipse.jetty.websocket:websocket-server:$jettyVersion",
+           "org.eclipse.jetty.websocket:javax-websocket-server-impl:$jettyVersion",
+           "org.eclipse.jetty.websocket:javax-websocket-client-impl:$jettyVersion",
+           "org.eclipse.jetty.websocket:websocket-server:$jettyVersion")
 }
 
 processResources {
