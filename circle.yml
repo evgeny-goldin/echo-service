@@ -4,30 +4,48 @@
 machine:
   java:
     version: oraclejdk8
-  services:
-    - docker
+  # services:
+  #   - docker
 
 dependencies:
   override:
-    - if [[ -e ~/docker/images.tar ]]; then docker load -i ~/docker/images.tar; fi
-    - ./gradlew clean distTar
-    - docker images
-    - docker build -t evgenyg/echo:$CIRCLE_SHA1 .
-    - mkdir -p ~/docker
-    - docker save evgenyg/java:jre-1.8 > ~/docker/images.tar
-    - ls -alh ~/docker/images.tar
+    - mkdir -p ~/.gradle ~/docker ~/helios
+    - du -hs   ~/.gradle ~/docker ~/helios
+    # - if [[ -e ~/docker/images.tar ]]; then docker load -i ~/docker/images.tar; fi
+    - if ! [[ -e ~/helios/helios-debs.tar.gz ]]; then wget "https://github.com/spotify/helios/releases/download/${HELIOS_VERSION}/helios-debs.tar.gz" -O ~/helios/helios-debs.tar.gz; cd ~/helios; tar -xzf helios-debs.tar.gz; fi
+    - ls  -al ~/helios/
+    - sudo dpkg -i ~/helios/helios-services_${HELIOS_VERSION}_all.deb
+    - sudo dpkg -i ~/helios/helios_${HELIOS_VERSION}_all.deb
+    - ls -al /usr/share/helios/lib/tools/
+    # - set -x /usr/bin/helios --version
+    - java -version
+    - java -cp /usr/share/helios/lib/tools/helios-tools-0.8.153-shaded.jar com.spotify.helios.cli.CliMain --version
+    # - ./gradlew clean distTar
+    # - docker images
+    # - docker build -t "evgenyg/echo:$CIRCLE_SHA1" .
+    # - docker save evgenyg/java:jre-1.8 > ~/docker/images.tar
+    - du -hs   ~/.gradle ~/docker ~/helios
   cache_directories:
     - "~/.gradle"
     - "~/docker"
+    - "~/helios"
 
 test:
   override:
     - echo OK
 
-deployment:
-  production:
-    branch: master
-    commands:
-      - docker login -e $DOCKER_EMAIL -u $DOCKER_USER -p $DOCKER_PASS
-      - docker push evgenyg/echo:$CIRCLE_SHA1
-      - echo "Pushed [evgenyg/echo:$CIRCLE_SHA1]"
+# deployment:
+#   production:
+#     branch: master
+#     commands:
+      # - docker login -e $DOCKER_EMAIL -u $DOCKER_USER -p $DOCKER_PASS
+      # - docker push "evgenyg/echo:$CIRCLE_SHA1"
+      # - echo "Pushed [evgenyg/echo:$CIRCLE_SHA1]"
+      # - helios -z http://$HELIOS_MASTER:5801 hosts
+      # - helios -z http://$HELIOS_MASTER:5801 jobs
+      # - helios -z http://$HELIOS_MASTER:5801 undeploy --all --yes echo
+      # - helios -z http://$HELIOS_MASTER:5801 remove         --yes echo
+      # - helios -z http://$HELIOS_MASTER:5801 jobs
+      # - helios -z http://$HELIOS_MASTER:5801 create echo:v1 "evgenyg/echo:$CIRCLE_SHA1" -p http=8080:8080 --register echo
+      # - helios -z http://$HELIOS_MASTER:5801 deploy echo    "$HELIOS_AGENT1"
+      # - helios -z http://$HELIOS_MASTER:5801 deploy echo "$HELIOS_AGENT2"
