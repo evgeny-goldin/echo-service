@@ -11,9 +11,10 @@ dependencies:
   override:
     - if [[ -e ~/docker/images.tar ]]; then docker load -i ~/docker/images.tar; fi
     - ./gradlew clean distTar
-    - docker build -t evgenyg/echo .
+    - docker images
+    - docker build -t evgenyg/echo:$CIRCLE_SHA1 .
     - mkdir -p ~/docker
-    - docker save evgenyg/java:jre-1.8 evgenyg/echo > ~/docker/images.tar
+    - docker save evgenyg/java:jre-1.8 > ~/docker/images.tar
     - ls -alh ~/docker/images.tar
   cache_directories:
     - "~/.gradle"
@@ -28,4 +29,5 @@ deployment:
     branch: master
     commands:
       - docker login -e $DOCKER_EMAIL -u $DOCKER_USER -p $DOCKER_PASS
-      - docker push evgenyg/echo
+      - docker push evgenyg/echo:$CIRCLE_SHA1
+      - echo "Pushed [evgenyg/echo:$CIRCLE_SHA1]"
