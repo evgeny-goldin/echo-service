@@ -4,14 +4,16 @@ apply plugin: 'com.bmuschko.docker-remote-api'
 
 defaultTasks 'image'
 
-group               = 'com.goldin.echo'
-version             = '0.0.1-SNAPSHOT'
+group   = 'com.goldin.echo'
+version = '0.0.1-SNAPSHOT'
 // noinspection GroovyUnusedAssignment
-sourceCompatibility = 1.7
+sourceCompatibility   = 1.7
 // noinspection GroovyUnusedAssignment
-targetCompatibility = 1.7
-final portNumber    = 8080
-final dockerImage   = 'evgenyg/echo'
+targetCompatibility   = 1.7
+final portNumber      = 8080
+final dockerImageName = env( 'IMAGE_NAME', 'noname' )
+final dockerImageTag  = env( 'IMAGE_TAG',  String.valueOf( System.currentTimeMillis()))
+final dockerImage     = dockerImageName + ':' + dockerImageTag;
 // https://jcenter.bintray.com/org/springframework/boot/spring-boot-starter-web/
 final springBootVersion = '1.2.1.RELEASE'
 // https://jcenter.bintray.com/org/eclipse/jetty/jetty-webapp/
@@ -60,14 +62,13 @@ processResources {
 if ( env( 'DOCKER_HOST', '' )) {
   docker {
     // noinspection GrReassignedInClosureLocalVar
-    url      = "https://${ env( 'DOCKER_HOST' ) - 'tcp://' }"
-    certPath = new File( env( 'DOCKER_CERT_PATH' ))
+    url = "http://${ env( 'DOCKER_HOST' ) - 'tcp://' }"
 
     registry {
       url      = 'https://index.docker.io/v1'
-      username = 'evgenyg'
-      password = env( 'DOCKER_PASS', 'dummy' )
-      email    = 'evgenyg@gmail.com'
+      username = env( 'DOCKER_USER', 'user' )
+      password = env( 'DOCKER_PASS', 'password' )
+      email    = env( 'DOCKER_MAIL', 'email' )
     }
   }
 
@@ -92,9 +93,9 @@ if ( env( 'DOCKER_HOST', '' )) {
 
 
   task push( type: com.bmuschko.gradle.docker.tasks.image.DockerPushImage ) {
-    dependsOn image
-    imageName = dockerImage
-  }  
+    imageName = dockerImageName
+    tag       = dockerImageTag
+  }
 } else {
   println '> \$DOCKER_HOST is undefined, no Docker-related tasks (dockerfile, image, push) will be available'
 }
@@ -107,4 +108,7 @@ def env( String name, String defaultValue = null ) {
 }
 
 
-apply from: 'file:wrapper.gradle'
+println "> Running Gradle [${ project.gradle.gradleVersion }], Groovy [${ GroovySystem.version }], Java [${ System.getProperty( 'java.version' ) }]"
+println "> Building [${ project.group }:${ project.name }:${ project.version }], Docker image [$dockerImage]"
+
+task wrapper( type: Wrapper ) { gradleVersion = '2.2.1' }
