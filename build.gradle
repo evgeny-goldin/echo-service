@@ -1,19 +1,15 @@
 apply plugin: 'java'
 apply plugin: 'spring-boot'
-apply plugin: 'com.bmuschko.docker-remote-api'
 
 defaultTasks 'image'
 
 group   = 'com.goldin.echo'
 version = '0.0.1-SNAPSHOT'
 // noinspection GroovyUnusedAssignment
-sourceCompatibility   = 1.7
+sourceCompatibility     = 1.7
 // noinspection GroovyUnusedAssignment
-targetCompatibility   = 1.7
-final portNumber      = 8080
-final dockerImageName = env( 'IMAGE_NAME', 'noname' )
-final dockerImageTag  = env( 'IMAGE_TAG',  String.valueOf( System.currentTimeMillis()))
-final dockerImage     = dockerImageName + ':' + dockerImageTag;
+targetCompatibility     = 1.7
+final portNumber        = 8080
 // https://jcenter.bintray.com/org/springframework/boot/spring-boot-starter-web/
 final springBootVersion = '1.2.1.RELEASE'
 // https://jcenter.bintray.com/org/eclipse/jetty/jetty-webapp/
@@ -21,10 +17,8 @@ final jettyVersion      = '9.2.7.v20150116'
 
 buildscript {
   // https://docs.spring.io/spring-boot/docs/1.2.1.RELEASE/reference/htmlsingle/#getting-started-gradle-installation
-  // https://jcenter.bintray.com/com/bmuschko/gradle-docker-plugin/
   repositories { jcenter() }
-  dependencies { classpath( 'org.springframework.boot:spring-boot-gradle-plugin:1.2.1.RELEASE',
-                            'com.bmuschko:gradle-docker-plugin:0.8.2' )}
+  dependencies { classpath( 'org.springframework.boot:spring-boot-gradle-plugin:1.2.1.RELEASE' )}
 }
 
 repositories { jcenter() }
@@ -53,53 +47,6 @@ processResources {
   filter ( org.apache.tools.ant.filters.ReplaceTokens, tokens: [ 'portNumber' : String.valueOf( portNumber ) ])
 }
 
-/**
- * ---------------
- * Docker
- * ---------------
- */
-
-if ( env( 'DOCKER_HOST', '' )) {
-  docker {
-    // noinspection GrReassignedInClosureLocalVar
-    url = "http://${ env( 'DOCKER_HOST' ) - 'tcp://' }"
-
-    registry {
-      url      = 'https://index.docker.io/v1'
-      username = env( 'DOCKER_USER', 'user' )
-      password = env( 'DOCKER_PASS', 'password' )
-      email    = env( 'DOCKER_MAIL', 'email' )
-    }
-  }
-
-
-  task dockerfile( type: com.bmuschko.gradle.docker.tasks.image.Dockerfile ) {
-    destFile = project.file( 'Dockerfile' )
-    from           'evgenyg/java:jre-1.8'
-    maintainer     'Evgeny Goldin "evgenyg@gmail.com"'
-    addFile        "build/distributions/${project.name}-${project.version}.tar", '/opt'
-    defaultCommand "/opt/${project.name}-${project.version}/bin/${project.name}"
-    exposePort     portNumber
-  }
-
-
-  task image( type: com.bmuschko.gradle.docker.tasks.image.DockerBuildImage ) {
-    dependsOn distTar, dockerfile
-    inputDir = dockerfile.destFile.parentFile
-    noCache  = true
-    remove   = true
-    tag      = dockerImage
-  }
-
-
-  task push( type: com.bmuschko.gradle.docker.tasks.image.DockerPushImage ) {
-    imageName = dockerImageName
-    tag       = dockerImageTag
-  }
-} else {
-  println '> \$DOCKER_HOST is undefined, no Docker-related tasks (dockerfile, image, push) will be available'
-}
-
 
 def env( String name, String defaultValue = null ) {
   final  value = System.getenv( name )
@@ -109,6 +56,6 @@ def env( String name, String defaultValue = null ) {
 
 
 println "> Running Gradle [${ project.gradle.gradleVersion }], Groovy [${ GroovySystem.version }], Java [${ System.getProperty( 'java.version' ) }]"
-println "> Building [${ project.group }:${ project.name }:${ project.version }], Docker image [$dockerImage]"
+println "> Building [${ project.group }:${ project.name }:${ project.version }]"
 
 task wrapper( type: Wrapper ) { gradleVersion = '2.2.1' }
