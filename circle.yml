@@ -1,0 +1,31 @@
+---
+# https://circleci.com/docs/configuration
+
+machine:
+  java:
+    version: oraclejdk8
+  services:
+    - docker
+
+dependencies:
+  override:
+    - if [[ -e ~/docker/images.tar ]]; then docker load -i ~/docker/images.tar; fi
+    - ./gradlew clean distTar
+    - docker build -t evgenyg/echo .
+    - mkdir -p ~/docker
+    - docker save evgenyg/java:jre-1.8 evgenyg/echo > ~/docker/images.tar
+    - ls -alh ~/docker/images.tar
+  cache_directories:
+    - "~/.gradle"
+    - "~/docker"
+
+test:
+  override:
+    - echo OK
+
+deployment:
+  production:
+    branch: master
+    commands:
+      - docker login -e $DOCKER_EMAIL -u $DOCKER_USER -p $DOCKER_PASS
+      - docker push evgenyg/echo
