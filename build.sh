@@ -25,15 +25,14 @@ if [ "$DOCKER_USER" != "" ] && [ "$DOCKER_PASS" != "" ]; then
 
   sudo docker login -u "$DOCKER_USER" -p "$DOCKER_PASS" -e "$DOCKER_MAIL"
   sudo docker push     "$image_name:$image_tag"
-  sudo docker tag      "$image_name:$image_tag" "$image_name:latest"
+  sudo docker tag   -f "$image_name:$image_tag" "$image_name:latest"
   sudo docker push     "$image_name:latest"
 
   if [ "$MASTER" != "" ]; then
     set -x
     $helios hosts
-    $helios jobs
-    $helios undeploy --all --yes "$job"
-    $helios remove         --yes "$job"
+    $helios undeploy --all --yes "$job" || echo OK
+    $helios remove         --yes "$job" || echo OK
     $helios jobs
     $helios create "$job:v1" "$image_name:$image_tag" -p http=8080:8080 --register "$job"
     if [ "$AGENTS" != "" ]; then
