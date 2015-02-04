@@ -29,7 +29,10 @@ public class EchoController {
   @ResponseBody
   String home() throws IOException, ServletException {
     response.setContentType( TEXT_PLAIN_VALUE );
-    return RequestDumper.dump( request );
+    final String dump = RequestDumper.dump( request );
+    // noinspection UseOfSystemOutOrSystemErr
+    System.out.println( dump );
+    return dump;
   }
 
 
