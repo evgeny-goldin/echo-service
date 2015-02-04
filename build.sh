@@ -8,9 +8,14 @@ image_name='evgenyg/echo'
 image_tag=$(date +"%m-%d-%y-%T" | tr ':' '-')
 helios="helios -z http://${MASTER}:5801"
 
+if [[ "$HOME" =~ ^/Users/ ]]; then # OS X
+  docker='docker'
+else
+  docker='sudo docker'
+fi
 
 ./gradlew --version
-docker    --version
+$docker   --version
 helios    --version
 
 echo "\$image_name = [$image_name]"
@@ -18,15 +23,15 @@ echo "\$image_tag  = [$image_tag]"
 echo "\$helios     = [$helios]"
 
 ./gradlew clean distTar
-sudo docker build --rm --no-cache -t "$image_name:$image_tag" .
-sudo docker images
+$docker build --rm --no-cache -t "$image_name:$image_tag" .
+$docker tag   -f "$image_name:$image_tag" "$image_name:latest"
+$docker images
 
 if [ "$DOCKER_USER" != "" ] && [ "$DOCKER_PASS" != "" ]; then
 
-  sudo docker login -u "$DOCKER_USER" -p "$DOCKER_PASS" -e "$DOCKER_MAIL"
-  sudo docker push     "$image_name:$image_tag"
-  sudo docker tag   -f "$image_name:$image_tag" "$image_name:latest"
-  sudo docker push     "$image_name:latest"
+  $docker login -u "$DOCKER_USER" -p "$DOCKER_PASS" -e "$DOCKER_MAIL"
+  $docker push     "$image_name:$image_tag"
+  $docker push     "$image_name:latest"
 
   if [ "$MASTER" != "" ]; then
     set -x
