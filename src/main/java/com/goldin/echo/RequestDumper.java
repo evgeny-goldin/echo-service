@@ -61,8 +61,8 @@ class RequestDumper {
         return pair( parameter, string( Arrays.asList( request.getParameterValues( parameter ))));
       }}));
 
-    // result.append( title( "Body" ));
-    // result.append( line( string( request.getInputStream())));
+    result.append( title( "Body" ));
+    result.append( line( string( request.getInputStream())));
 
     return result.toString();
   }
