@@ -42,24 +42,18 @@ class RequestDumper {
       append( pair( "Remote Host",     request.getRemoteHost())).
       append( pair( "Remote Port",     string( request.getRemotePort())));
 
-    result.append( string( "Headers", iterable( request.getHeaderNames()), new Function<String, String>(){
-      @Override public String apply ( String header ) {
-        return pair( header, string( iterable( request.getHeaders( header ))));
-      }}));
+    result.append( string( "Headers", iterable( request.getHeaderNames()),
+                   header -> pair( header, string( iterable( request.getHeaders( header ))))));
 
-    result.append( string( "Locales", iterable( request.getLocales()), new Function<Locale, String>(){
-      @Override public String apply ( Locale locale ){
-        return line( locale.toLanguageTag());
-      }}));
+    result.append( string( "Locales", iterable( request.getLocales()),
+                   locale -> line( locale.toLanguageTag())));
 
     if (( request.getContentType() != null ) && request.getContentType().startsWith( MULTIPART_FORM_DATA_VALUE )) {
       result.append( formParts( request.getParts()));
     }
 
-    result.append( string( "Parameters", iterable( request.getParameterNames()), new Function<String, String>(){
-      @Override public String apply ( String parameter ) {
-        return pair( parameter, string( Arrays.asList( request.getParameterValues( parameter ))));
-      }}));
+    result.append( string( "Parameters", iterable( request.getParameterNames()),
+                   parameter -> pair( parameter, string( Arrays.asList( request.getParameterValues( parameter ))))));
 
     result.append( title( "Body" ));
     result.append( line( string( request.getInputStream())));
@@ -70,17 +64,13 @@ class RequestDumper {
 
   @SuppressWarnings({ "StringBufferReplaceableByString", "InnerClassTooDeeplyNested" })
   private static String formParts( Iterable<Part> parts ) {
-    return string( "Form Parts", parts, new Function<Part, String>(){
-      @Override public String apply ( final Part part ){
-        return new StringBuilder( title( part.getName())).
-          append( pair( "Content Type", part.getContentType())).
-          append( pair( "File Name",    part.getSubmittedFileName())).
-          append( pair( "Size",         string( part.getSize()))).
-          append( string( "Headers", part.getHeaderNames(), new Function<String, String>(){
-            @Override public String apply ( String header ){
-              return pair( header, string( part.getHeaders( header )));
-            }})).toString();
-      }});
+    return string( "Form Parts", parts,
+                   part -> new StringBuilder( title( part.getName())).
+                           append( pair( "Content Type", part.getContentType())).
+                           append( pair( "File Name", part.getSubmittedFileName())).
+                           append( pair( "Size", string( part.getSize()))).
+                           append( string( "Headers", part.getHeaderNames(),
+                                           header -> pair( header, string( part.getHeaders( header ))))).toString());
   }
 
 
