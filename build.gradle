@@ -6,14 +6,14 @@ defaultTasks 'distTar'
 group   = 'com.goldin.echo'
 version = '0.0.1-SNAPSHOT'
 // noinspection GroovyUnusedAssignment
-sourceCompatibility     = 1.7
+sourceCompatibility     = 1.8
 // noinspection GroovyUnusedAssignment
-targetCompatibility     = 1.7
+targetCompatibility     = 1.8
 final portNumber        = 8080
 // https://jcenter.bintray.com/org/springframework/boot/spring-boot-starter-web/
-final springBootVersion = '1.2.1.RELEASE'
+final springBootVersion = '1.2.2.RELEASE'
 // https://jcenter.bintray.com/org/eclipse/jetty/jetty-webapp/
-final jettyVersion      = '9.2.7.v20150116'
+final jettyVersion      = '9.2.9.v20150224'
 
 buildscript {
   // https://docs.spring.io/spring-boot/docs/1.2.1.RELEASE/reference/htmlsingle/#getting-started-gradle-installation
@@ -58,4 +58,4 @@ def env( String name, String defaultValue = null ) {
 println "> Running Gradle [${ project.gradle.gradleVersion }], Groovy [${ GroovySystem.version }], Java [${ System.getProperty( 'java.version' ) }]"
 println "> Building [${ project.group }:${ project.name }:${ project.version }]"
 
-task wrapper( type: Wrapper ) { gradleVersion = '2.2.1' }
+task wrapper( type: Wrapper ) { gradleVersion = '2.3' }
