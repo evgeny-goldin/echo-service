@@ -22,6 +22,8 @@ echo "\$image_name = [$image_name]"
 echo "\$image_tag  = [$image_tag]"
 echo "\$helios     = [$helios]"
 
+set -x
+
 ./gradlew clean distTar
 $docker build -t "$image_name:$image_tag" .
 $docker tag   -f "$image_name:$image_tag" "$image_name:latest"
@@ -35,7 +37,6 @@ if [ "$DOCKER_USER" != "" ] && [ "$DOCKER_PASS" != "" ]; then
   $docker push     "$image_name:latest"
 
   if [ "$MASTER" != "" ]; then
-    set -x
     $helios hosts
     $helios undeploy --all --yes "$job" || echo OK
     $helios remove         --yes "$job" || echo OK
