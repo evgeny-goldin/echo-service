@@ -34,14 +34,15 @@ time $docker push "$image_name:latest"
 
 if [ "$MASTER" != "" ]; then
   $helios hosts
-  $helios undeploy --all --yes "$job_name" || echo OK
-  $create_job                              || echo OK
+  $helios remove --yes "$job_name" || echo OK
+  $create_job
   $helios jobs
   if [ "$AGENTS" != "" ]; then
     echo "Deploying job [$job_name] to [$AGENTS]"
-    $helios deploy       "$job_name" $AGENTS
-    $helios status --job "$job_name"
-    $helios inspect      "$job_name" 2>&1 | grep 'Image:'
+    $helios undeploy --all --yes "$job_name" || echo OK
+    $helios deploy               "$job_name" $AGENTS
+    $helios status --job         "$job_name"
+    $helios inspect              "$job_name" 2>&1 | grep 'Image:'
   else
     echo ">> \$AGENTS are not defined, Helios job will not be deployed"
   fi
