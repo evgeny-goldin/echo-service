@@ -18,6 +18,10 @@ fi
 
 exec 5>&1
 
+# Ugly hack to fight
+# "Error getting container fd208149782248bdbff5f5f0bce8aee44d717b682c9e01e74c0a4d0de569e6bf from driver devicemapper: Error mounting '/dev/mapper/docker-202:1-403169-fd208149782248bdbff5f5f0bce8aee44d717b682c9e01e74c0a4d0de569e6bf' on '/var/lib/docker/devicemapper/mnt/fd208149782248bdbff5f5f0bce8aee44d717b682c9e01e74c0a4d0de569e6bf': no such file or directory"
+sudo service docker restart
+
 ./gradlew --version
 $docker   --version
 helios    --version
