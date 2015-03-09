@@ -6,6 +6,7 @@ job_name='echo'
 image_name='evgenyg-docker-docker.bintray.io/evgenyg/echo'
 image_tag=$(git log -1 --format="%h")
 helios="helios -z http://${MASTER}:5801"
+# Add env variable - Git SHA
 create_job="$helios create $job_name:v1 $image_name:$image_tag -p http=8080:8181 --register $job_name"
 
 if [[ "$HOME" =~ ^/Users/ ]]; then # OS X
@@ -13,6 +14,8 @@ if [[ "$HOME" =~ ^/Users/ ]]; then # OS X
 else
   docker='sudo docker'
 fi
+
+exec 5>&1
 
 ./gradlew --version
 $docker   --version
@@ -40,9 +43,16 @@ if [ "$MASTER" != "" ]; then
   $helios jobs
   if [ "$AGENTS" != "" ]; then
     echo "Deploying job [$job_name] to [$AGENTS]"
-    $helios deploy       "$job_name" $AGENTS
-    $helios status --job "$job_name"
-    $helios inspect      "$job_name" 2>&1 | grep 'Image:'
+    $helios deploy  "$job_name" $AGENTS
+    $helios inspect "$job_name" 2>&1 | grep 'Image:'
+    counter="2"
+    while [ "$counter" != "0" ]; do
+      counter=$($helios status --job "$job_name" | tee >(cat - >&5) | grep 'PULLING_IMAGE' | wc -l)
+      sleep 5
+    done
+    echo "----------------------------------------------------"
+    echo "Deployed job [$job_name] as [$image_name:$image_tag]"
+    echo "----------------------------------------------------"
   else
     echo ">> \$AGENTS are not defined, Helios job will not be deployed"
   fi
