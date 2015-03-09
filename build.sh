@@ -23,7 +23,7 @@ echo "\$image_tag  = [$image_tag]"
 echo "\$helios     = [$helios]"
 
 ./gradlew clean distTar
-$docker build --rm --no-cache -t "$image_name:$image_tag" .
+$docker build -t "$image_name:$image_tag" .
 $docker tag   -f "$image_name:$image_tag" "$image_name:latest"
 $docker images
 
