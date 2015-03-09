@@ -43,7 +43,7 @@ if [ "$DOCKER_USER" != "" ] && [ "$DOCKER_PASS" != "" ]; then
     $helios create "$job:v1" "$image_name:$image_tag" -p http=8080:8080 --register "$job"
     if [ "$AGENTS" != "" ]; then
       echo "Deploying job [$job] to [$AGENTS]"
-      $helios deploy $job  "$AGENTS"
+      $helios deploy $job $AGENTS
       $helios status --job "$job"
     else
       echo ">> \$AGENTS are not defined, Helios job will not be deployed"
