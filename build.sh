@@ -29,6 +29,7 @@ $docker images
 
 if [ "$DOCKER_USER" != "" ] && [ "$DOCKER_PASS" != "" ]; then
 
+  echo "Login to DockerHub as [$DOCKER_USER/$DOCKER_MAIL]"
   $docker login -u "$DOCKER_USER" -p "$DOCKER_PASS" -e "$DOCKER_MAIL"
   $docker push     "$image_name:$image_tag"
   $docker push     "$image_name:latest"
