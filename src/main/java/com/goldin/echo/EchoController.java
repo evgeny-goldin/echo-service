@@ -12,11 +12,14 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.logging.Logger;
 
 
 @Controller
 @EnableAutoConfiguration
 public class EchoController {
+
+  private final static Logger LOG = Logger.getLogger( EchoController.class.getName());
 
   @Autowired
   private HttpServletRequest request;
@@ -29,9 +32,10 @@ public class EchoController {
   @ResponseBody
   String home() throws IOException, ServletException {
     response.setContentType( TEXT_PLAIN_VALUE );
-    final String dump = RequestDumper.dump( request );
-    // noinspection UseOfSystemOutOrSystemErr
-    System.out.println( dump );
+    String gitSha = System.getenv( "GIT_SHA" );
+    if ( gitSha == null ) { gitSha = ""; }
+    final String dump = RequestDumper.dump( request ) + "\n" + gitSha;
+    LOG.info( dump );
     return dump;
   }
 
