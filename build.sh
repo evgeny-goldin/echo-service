@@ -41,6 +41,7 @@ if [ "$MASTER" != "" ]; then
     echo "Deploying job [$job_name] to [$AGENTS]"
     $helios deploy       "$job_name" $AGENTS
     $helios status --job "$job_name"
+    $helios inspect      "$job_name" 2>&1 | grep 'Image:'
   else
     echo ">> \$AGENTS are not defined, Helios job will not be deployed"
   fi
