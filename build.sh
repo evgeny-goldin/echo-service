@@ -34,7 +34,8 @@ time $docker push "$image_name:latest"
 
 if [ "$MASTER" != "" ]; then
   $helios hosts
-  $create_job || echo OK
+  $helios undeploy --all --yes "$job_name" || echo OK
+  $create_job                              || echo OK
   $helios jobs
   if [ "$AGENTS" != "" ]; then
     echo "Deploying job [$job_name] to [$AGENTS]"
