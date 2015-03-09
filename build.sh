@@ -6,7 +6,7 @@ job_name='echo'
 image_name='evgenyg-docker-docker.bintray.io/evgenyg/echo'
 image_tag=$(git log -1 --format="%h")
 helios="helios -z http://${MASTER}:5801"
-create_job="$helios create $job_name:v1 $image_name:$image_tag -p http=8080:8181 --register $job_name || echo OK"
+create_job="$helios create $job_name:v1 $image_name:$image_tag -p http=8080:8181 --register $job_name"
 
 if [[ "$HOME" =~ ^/Users/ ]]; then # OS X
   docker='docker'
@@ -34,7 +34,7 @@ time $docker push "$image_name:latest"
 
 if [ "$MASTER" != "" ]; then
   $helios hosts
-  $create_job
+  $create_job || echo OK
   $helios jobs
   if [ "$AGENTS" != "" ]; then
     echo "Deploying job [$job_name] to [$AGENTS]"
