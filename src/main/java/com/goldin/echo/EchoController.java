@@ -32,11 +32,17 @@ public class EchoController {
   @ResponseBody
   String home() throws IOException, ServletException {
     response.setContentType( TEXT_PLAIN_VALUE );
-    String gitSha = System.getenv( "GIT_SHA" );
-    if ( gitSha == null ) { gitSha = ""; }
-    final String dump = RequestDumper.dump( request ) + "\n" + gitSha;
-    LOG.info( dump );
-    return dump;
+
+    final StringBuilder dump   = new StringBuilder( RequestDumper.dump( request ));
+    final String        gitSha = System.getenv( "GIT_SHA" );
+
+    if ( gitSha != null ){
+      dump.append( String.format( "\n[%s]", gitSha ));
+    }
+
+    final String response = dump.toString();
+    LOG.info( response );
+    return response;
   }
 
 
