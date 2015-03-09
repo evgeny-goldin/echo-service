@@ -2,7 +2,6 @@
 
 set -e
 
-docker_port='8181'
 job='echo'
 image_name='evgenyg/echo'
 image_tag=$(date +"%m-%d-%y-%T" | tr ':' '-')
@@ -29,10 +28,15 @@ $docker build -t "$image_name:$image_tag" .
 $docker tag   -f "$image_name:$image_tag" "$image_name:latest"
 $docker images
 
+set +x
+
 if [ "$DOCKER_USER" != "" ] && [ "$DOCKER_PASS" != "" ]; then
 
   echo "Login to DockerHub as [$DOCKER_USER/$DOCKER_MAIL]"
   $docker login -u "$DOCKER_USER" -p "$DOCKER_PASS" -e "$DOCKER_MAIL"
+
+  set -x
+
   $docker push     "$image_name:$image_tag"
   $docker push     "$image_name:latest"
 
@@ -41,7 +45,7 @@ if [ "$DOCKER_USER" != "" ] && [ "$DOCKER_PASS" != "" ]; then
     $helios undeploy --all --yes "$job" || echo OK
     $helios remove         --yes "$job" || echo OK
     $helios jobs
-    $helios create "$job:v1" "$image_name:$image_tag" -p http=8080:8080 --register "$job"
+    $helios create "$job:v1" "$image_name:$image_tag" -p http=8080:8181 --register "$job"
     if [ "$AGENTS" != "" ]; then
       echo "Deploying job [$job] to [$AGENTS]"
       $helios deploy $job $AGENTS
