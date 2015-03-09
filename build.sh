@@ -45,10 +45,13 @@ if [ "$MASTER" != "" ]; then
     echo "Deploying job [$job_name] to [$AGENTS]"
     $helios deploy  "$job_name" $AGENTS
     $helios inspect "$job_name" 2>&1 | grep 'Image:'
+
+    set +x
+
     counter="2"
     while [ "$counter" != "0" ]; do
-      counter=$($helios status --job "$job_name" | tee >(cat - >&5) | grep 'PULLING_IMAGE' | wc -l)
       sleep 5
+      counter=$($helios status --job "$job_name" | tee >(cat - >&5) | grep 'PULLING_IMAGE' | wc -l)
     done
     echo "----------------------------------------------------"
     echo "Deployed job [$job_name] as [$image_name:$image_tag]"
