@@ -49,8 +49,7 @@ if [ "$MASTER" != "" ]; then
   $helios jobs
   if [ "$AGENTS" != "" ]; then
     echo "Deploying job [$job_name] to [$AGENTS]"
-    $helios deploy  "$job_name" $AGENTS
-    $helios inspect "$job_name" 2>&1 | grep 'Image:'
+    $helios deploy "$job_name" $AGENTS
 
     set +x
 
