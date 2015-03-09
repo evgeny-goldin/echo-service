@@ -2,12 +2,13 @@
 
 set -e
 
+git_sha=$(git log -1 --format="%h")
 job_name='echo'
 image_name='evgenyg-docker-docker.bintray.io/evgenyg/echo'
-image_tag=$(git log -1 --format="%h")
+image_tag="$git_sha"
 helios="helios -z http://${MASTER}:5801"
 # Add env variable - Git SHA
-create_job="$helios create $job_name:v1 $image_name:$image_tag -p http=8080:8181 --register $job_name"
+create_job="$helios create $job_name:v1 $image_name:$image_tag -p http=8080:8181 --register $job_name --env GIT_SHA=$git_sha"
 
 if [[ "$HOME" =~ ^/Users/ ]]; then # OS X
   docker='docker'
@@ -21,6 +22,7 @@ exec 5>&1
 $docker   --version
 helios    --version
 
+echo "\$git_sha    = [$git_sha]"
 echo "\$image_name = [$image_name]"
 echo "\$image_tag  = [$image_tag]"
 echo "\$helios     = [$helios]"
