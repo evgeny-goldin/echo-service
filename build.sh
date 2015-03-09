@@ -41,12 +41,8 @@ if [ "$DOCKER_USER" != "" ] && [ "$DOCKER_PASS" != "" ]; then
     $helios jobs
     $helios create "$job:v1" "$image_name:$image_tag" -p http=8080:8080 --register "$job"
     if [ "$AGENTS" != "" ]; then
-      for agent in $AGENTS; do
-        agent=$(echo $agent | tr -d '"') # Deleting remaining quotes from $AGENTS
-        echo "Deploying job [$job] to agent [$agent]"
-        $helios deploy $job   $agent
-        $helios status --host $agent
-      done
+      echo "Deploying job [$job] to [$AGENTS]"
+      $helios deploy $job  "$AGENTS"
       $helios status --job "$job"
     else
       echo ">> \$AGENTS are not defined, Helios job will not be deployed"
