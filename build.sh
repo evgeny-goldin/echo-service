@@ -4,7 +4,7 @@ set -e
 
 git_sha=$(git log -1 --format="%h")
 job_name='echo'
-image_name='evgenyg/echo'
+image_name='evgenyg-docker-docker.bintray.io/evgenyg/echo'
 image_tag="$git_sha"
 helios="helios -z http://${MASTER}:5801"
 # Add env variable - Git SHA
