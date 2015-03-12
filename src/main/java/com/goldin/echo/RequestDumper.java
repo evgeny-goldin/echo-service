@@ -57,7 +57,6 @@ class RequestDumper {
 
     // result.append( title( "Body" ));
     // result.append( line( string( request.getInputStream())));
-    
     return result.toString();
   }
 
